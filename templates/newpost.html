@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1 style= "text-align:center;"> Build a Blog</h1>
+    <form method='post'>
+        <label>
+            <p>Title for your new blog:</p>
+            <input type="text" name='title' />
+        </label>
+        <br>
+        <br>
+        <br>
+        <label>Your new blog:
+            <textarea name='content'></textarea>
+        </label>
+        <input type="submit" value="Add Entry"/>
+    </form>
+
+
+{% endblock %}
+
