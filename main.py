@@ -23,6 +23,9 @@ class Blog(db.Model):
 @app.route('/', methods=['POST', 'GET'])
 def index():
 
+
+
+
     if request.method == 'POST':
         error_title = ""
         error_content =""
@@ -46,7 +49,7 @@ def index():
         posts = Blog.query.all()
         
 
-
+ 
     return render_template('blog.html', posts= posts)
 
 @app.route('/newpost', methods=['post', 'get'])
@@ -64,10 +67,18 @@ def add():
         db.session.commit()
 
         blog_id = new_blog.id
-        
-        return redirect("/blog?id=" + str(blog_id))
+       
+        return redirect("/singlepost?id=" + str(blog_id))
 
     return render_template("newpost.html", post=new_blog)
 
+@app.route("/singlepost")
+def singlepost():
+    
+    posts = db.session.query(Blog)
+    post = ""
+    for post in posts:
+        post = post
+    return render_template("single_post.html", post=post)
 if __name__ == '__main__':
     app.run()
