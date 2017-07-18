@@ -23,30 +23,8 @@ class Blog(db.Model):
 @app.route('/', methods=['POST', 'GET'])
 def index():
 
-
-
-
-    if request.method == 'POST':
-        error_title = ""
-        error_content =""
-        blog_title = request.form['title']
-        blog_content = request.form['content']
-        if len(blog_title) >=120 or len(blog_title) ==0:
-            error_title = "Your title length exceeds the limit, please shorten your title."
-            blog_title =""
-        if len(blog_content) >=1000 or len(blog_content) ==0:
-            error_content = "your content length exceeds the limit, please shorten your content."
-            blog_content = ""
-        if len(error_title)>0 or len(error_content)>0:
-            return render_template('index.html', title= blog_title, content= blog_content, error_title=error_title, error_content=error_content)
-        else:
-            new_task = Blog(blog_title, blog_content)
-            db.session.add(new_task)
-            db.session.commit()
-            return redirect("/blog_page?id=" +str(new_task.id))
-
-    else:
-        posts = Blog.query.all()
+   
+    posts = Blog.query.all()
         
 
  
@@ -57,20 +35,34 @@ def add():
 
     post = ""
     new_blog = ""
+    title_error = ""
+    content_error =""
     if request.method == "POST":
         #blog_id = request.form['id']
         blog_title = request.form['title']
-        blog_content = request.form['content']
+        
+        if not blog_title:
+            title_error = "Please type a title for your blog post"
+        elif len(blog_title) > 120:
+            title_error = "Your title length exceeds the limit, please shorten your title."
 
-        new_blog = Blog(blog_title, blog_content)
-        db.session.add(new_blog)
-        db.session.commit()
+        else:
+            blog_content = request.form['content']
 
-        blog_id = new_blog.id
+            if not blog_content:
+                content_error="Please type something for blog body."
+            elif len(blog_content)>1000:
+                content_error= "Your blog body is more than 1000 words."
+            else:
+                new_blog = Blog(blog_title, blog_content)
+                db.session.add(new_blog)
+                db.session.commit()
+
+                blog_id = new_blog.id
        
-        return redirect("/singlepost?id=" + str(blog_id))
+                return redirect("/singlepost?id=" + str(blog_id))
 
-    return render_template("newpost.html", post=new_blog)
+    return render_template("newpost.html", post=new_blog, title_error=title_error,content_error=content_error)
 
 @app.route("/singlepost")
 def singlepost():
